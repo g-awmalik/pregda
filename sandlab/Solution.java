@@ -1,5 +1,4 @@
 import java.awt.*;
-import java.io.*;
 import java.util.*;
 
 public class Solution {
@@ -71,8 +70,6 @@ public class Solution {
   /** Called repeatedly. Causes one random particle to maybe do something. */
   public void step() {
     // TODO: Populate this method in step 6 and beyond.
-
-    //RandomGenerator randomGenObj = new RandomGenerator(this.display.getNumRows(), this.display.getNumColumns());
     Point randomPtObj = random.getRandomPoint();
 
     if (this.grid[randomPtObj.row][randomPtObj.column] == SAND) {
@@ -111,9 +108,7 @@ public class Solution {
 
   public boolean canWaterMoveDown (int row, int column) {
     if (row+1 < this.display.getNumRows() &&
-    this.grid[row+1][column] != SAND &&
-    this.grid[row+1][column] != METAL &&
-    this.grid[row+1][column] != WATER) {
+    this.grid[row+1][column] == EMPTY) {
       return true;
     }
 
@@ -122,9 +117,7 @@ public class Solution {
 
   public boolean canWaterMoveLeft (int row, int column) {
     if (column-1 >= 0 &&
-    this.grid[row][column-1] != SAND &&
-    this.grid[row][column-1] != METAL &&
-    this.grid[row][column-1] != WATER) {
+    this.grid[row][column-1] == EMPTY) {
       return true;
     }
 
@@ -132,10 +125,8 @@ public class Solution {
   }
 
   public boolean canWaterMoveRight (int row, int column) {
-    if (column+1 < this.display.getNumColumns() &&    
-    this.grid[row][column+1] != SAND &&
-    this.grid[row][column+1] != METAL &&
-    this.grid[row][column+1] != WATER) {
+    if (column+1 < this.display.getNumColumns() &&
+    this.grid[row][column+1] == EMPTY) {
       return true;
     }
 
