@@ -113,9 +113,10 @@ public class Solution {
     if (row+1 < this.display.getNumRows() &&
     this.grid[row+1][column] == EMPTY) {
       return true;
-    }
+    } else {
 
     return false;
+    }
   }
 
 
