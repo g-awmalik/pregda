@@ -3,7 +3,3 @@
 
 #check bin
 check_bin
-
-#test files
-*.in
-*.out
