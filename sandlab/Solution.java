@@ -8,8 +8,9 @@ public class Solution {
   public static final int METAL = 1;
   public static final int SAND = 2;
   public static final int WATER = 3;
+  public static final int WOOD = 4;
 
-  public static final String[] NAMES = {"Empty", "Metal", "Sand", "Water"};
+  public static final String[] NAMES = {"Empty", "Metal", "Sand", "Water", "Wood"};
 
   public static final int DOWN = 0;
   public static final int RIGHT = 1;
@@ -62,6 +63,8 @@ public class Solution {
           this.display.setColor(i, j, Color.YELLOW);
         } else if (particleType == WATER) {
           this.display.setColor(i, j, Color.BLUE);
+        } else if (particleType == WOOD) {
+          this.display.setColor(i, j, new Color(153, 102, 0));
         }
       }
     }
@@ -82,7 +85,8 @@ public class Solution {
       int direction = random.getRandomDirection();
       if (direction == DOWN &&
         canWaterMoveDown(randomPtObj.row, randomPtObj.column)) {
-          this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
+          int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column];
+          this.grid[randomPtObj.row][randomPtObj.column] = particleBelow;
           this.grid[randomPtObj.row+1][randomPtObj.column] = WATER;
       } else if (direction == RIGHT &&
         canWaterMoveRight(randomPtObj.row, randomPtObj.column)) {
@@ -93,8 +97,27 @@ public class Solution {
           this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
           this.grid[randomPtObj.row][randomPtObj.column-1] = WATER;
       }
+    } else if (this.grid[randomPtObj.row][randomPtObj.column] == WOOD) {
+      handleWoodParticles(randomPtObj);
     }
   }
+
+  public void handleWoodParticles(Point randomPtObj) {
+    if (canWoodMoveDown(randomPtObj.row, randomPtObj.column)) {
+      this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
+      this.grid[randomPtObj.row+1][randomPtObj.column] = WOOD;      
+    }
+  }
+
+  public boolean canWoodMoveDown (int row, int column) {
+    if (row+1 < this.display.getNumRows() &&
+    this.grid[row+1][column] == EMPTY) {
+      return true;
+    }
+
+    return false;
+  }
+
 
   public boolean canSandMoveDown (int row, int column) {
     if (row+1 < this.display.getNumRows() &&
@@ -108,7 +131,8 @@ public class Solution {
 
   public boolean canWaterMoveDown (int row, int column) {
     if (row+1 < this.display.getNumRows() &&
-    this.grid[row+1][column] == EMPTY) {
+    (this.grid[row+1][column] == EMPTY ||
+    this.grid[row+1][column] == WOOD)) {
       return true;
     }
 
