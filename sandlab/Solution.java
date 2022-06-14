@@ -73,13 +73,26 @@ public class Solution {
   /** Called repeatedly. Causes one random particle to maybe do something. */
   public void step() {
     // TODO: Populate this method in step 6 and beyond.
-    Point randomPtObj = random.getRandomPoint();
+    Point randomPtObj = random.getRandomPoint();    
 
     if (this.grid[randomPtObj.row][randomPtObj.column] == SAND) {
       if (canSandMoveDown(randomPtObj.row, randomPtObj.column)) {
         int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column];
         this.grid[randomPtObj.row][randomPtObj.column] = particleBelow;
         this.grid[randomPtObj.row+1][randomPtObj.column] = SAND;
+      } else {
+        int direction = random.getRandomDirection();
+        if (direction == LEFT &&
+          canSandSagLeft(randomPtObj.row, randomPtObj.column)) {
+            int particleLeft = this.grid[randomPtObj.row][randomPtObj.column-1];
+            this.grid[randomPtObj.row][randomPtObj.column] = particleLeft;
+            this.grid[randomPtObj.row][randomPtObj.column-1] = SAND;
+        } else if (direction == RIGHT &&
+          canSandSagRight(randomPtObj.row, randomPtObj.column)) {
+            int particleRight = this.grid[randomPtObj.row][randomPtObj.column+1];
+            this.grid[randomPtObj.row][randomPtObj.column] = particleRight;
+            this.grid[randomPtObj.row][randomPtObj.column+1] = SAND;
+        }
       }
     } else if (this.grid[randomPtObj.row][randomPtObj.column] == WATER) {
       int direction = random.getRandomDirection();
@@ -105,7 +118,7 @@ public class Solution {
   public void handleWoodParticles(Point randomPtObj) {
     if (canWoodMoveDown(randomPtObj.row, randomPtObj.column)) {
       this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
-      this.grid[randomPtObj.row+1][randomPtObj.column] = WOOD;      
+      this.grid[randomPtObj.row+1][randomPtObj.column] = WOOD;
     }
   }
 
@@ -117,6 +130,36 @@ public class Solution {
 
     return false;
     }
+  }
+
+  // sand will sag only if there are atleast two pixel empty or watery
+  // to the left or right of it
+  public boolean canSandSagLeft (int row, int column) {
+    if (column == 0 ||
+    row >= this.display.getNumRows() - 2) {
+      return false;
+    }
+
+    if (this.grid[row+2][column-1] == EMPTY ||
+    this.grid[row+2][column-1] == WATER) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public boolean canSandSagRight (int row, int column) {
+    if (column == this.display.getNumColumns() - 1 ||
+    row >= this.display.getNumRows() - 2) {
+      return false;
+    }
+
+    if (this.grid[row+2][column+1] == EMPTY ||
+    this.grid[row+2][column+1] == WATER) {
+      return true;
+    }
+
+    return false;
   }
 
 
