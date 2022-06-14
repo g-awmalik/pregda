@@ -73,7 +73,8 @@ public class Solution {
   /** Called repeatedly. Causes one random particle to maybe do something. */
   public void step() {
     // TODO: Populate this method in step 6 and beyond.
-    Point randomPtObj = random.getRandomPoint();    
+    Point randomPtObj = random.getRandomPoint();
+    int direction = random.getRandomDirection();
 
     if (this.grid[randomPtObj.row][randomPtObj.column] == SAND) {
       if (canSandMoveDown(randomPtObj.row, randomPtObj.column)) {
@@ -81,7 +82,6 @@ public class Solution {
         this.grid[randomPtObj.row][randomPtObj.column] = particleBelow;
         this.grid[randomPtObj.row+1][randomPtObj.column] = SAND;
       } else {
-        int direction = random.getRandomDirection();
         if (direction == LEFT &&
           canSandSagLeft(randomPtObj.row, randomPtObj.column)) {
             int particleLeft = this.grid[randomPtObj.row][randomPtObj.column-1];
@@ -95,7 +95,6 @@ public class Solution {
         }
       }
     } else if (this.grid[randomPtObj.row][randomPtObj.column] == WATER) {
-      int direction = random.getRandomDirection();
       if (direction == DOWN &&
         canWaterMoveDown(randomPtObj.row, randomPtObj.column)) {
           int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column];
