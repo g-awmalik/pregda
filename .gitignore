@@ -1,5 +1,8 @@
 # Compiled class file
 *.class
 
-#check bin
+#bin files
 check_bin
+
+#vscode files
+/.vscode
