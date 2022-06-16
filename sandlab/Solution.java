@@ -57,8 +57,39 @@ public class Solution {
     // TODO: Populate this method in step 3.
 
     Particle particleType = new Particle(tool);
-    this.grid[row][col] = particleType;
+
+    //if metal don't allow reassignment 
+    if( this.grid[row][col].getType() != METAL) {
+      if (tool == BALLOON && allowBalloon(row, col)){
+        //add the balloon to all four spaces 
+        this.grid[row][col] = particleType;
+        this.grid[row][col+1] = particleType;
+        this.grid[row][col-1] = particleType;
+        this.grid[row+1][col] = particleType;
+        this.grid[row-1][col] = particleType;
+      }
+      this.grid[row][col] = particleType;
+    }
+    //if equal to metal do nothing
   }
+
+  //Checks 4 spaces are empty before placing a balloon
+  private boolean allowBalloon(int row, int col){
+    //sand to the right 
+    if( col+1 < this.display.getNumColumns() && col-1 >= 0 
+    && row +1 <this.display.getNumRows() && row -1 >= 0) {
+      if(this.grid[row][col+1].getType() == EMPTY &&
+      this.grid[row][col-1].getType() == EMPTY && 
+      this.grid[row+1][col].getType() == EMPTY &&
+      this.grid[row-1][col].getType() == EMPTY) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  
 
   /** Copies each element of grid into the display. */
   public void updateDisplay() {
