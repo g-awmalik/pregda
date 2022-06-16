@@ -73,7 +73,7 @@ public class Solution {
     //if equal to metal do nothing
   }
 
-  //Checks 4 spaces are empty before placing a balloon
+  //Checks 4 spaces around row, col are empty before placing a balloon
   private boolean allowBalloon(int row, int col){
     //sand to the right 
     if( col+1 < this.display.getNumColumns() && col-1 >= 0 
@@ -121,6 +121,8 @@ public class Solution {
           
         } else if (particleObj.getType() == WOOD) {          
           this.display.setColor(i, j, new Color(153, 102, 0));
+        } else if (particleObj.getType() == BALLOON){
+          this.display.setColor(i, j, Color.RED);
         }
       }
     }
