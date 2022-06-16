@@ -11,8 +11,9 @@ public class Solution {
   public static final int SAND = 2;
   public static final int WATER = 3;
   public static final int WOOD = 4;
+  public static final int BALLOON = 5;
 
-  public static final String[] NAMES = {"Empty", "Metal", "Sand", "Water", "Wood"};
+  public static final String[] NAMES = {"Empty", "Metal", "Sand", "Water", "Wood", "Balloon"};
 
   public static final int DOWN = 0;
   public static final int RIGHT = 1;
@@ -61,7 +62,7 @@ public class Solution {
 
   /** Copies each element of grid into the display. */
   public void updateDisplay() {
-    // TODO: Populate this method in step 4 and beyond.
+    // TODO: Populate this method in step 4 and beyond.  
 
     for (int i = 0; i < this.grid.length; i++) {
       for (int j = 0; j < this.grid[i].length; j++) {
