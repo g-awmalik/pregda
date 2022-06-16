@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.util.*;
 
+import javax.swing.plaf.ColorUIResource;
+
 public class Solution {
 
   // Add constants for particle types here.
@@ -78,7 +80,13 @@ public class Solution {
           //this.display.setColor(i, j, new Color(153, 102, 0));
           this.display.setColor(i, j, sandTint);
         } else if (particleObj.getType() == WATER) {
-          this.display.setColor(i, j, Color.BLUE);
+          //add if water is next to sand, any of left, right, below
+          if (isWaterNextToSand(i, j)){
+            this.display.setColor(i,j, new Color(0, 0, 204));
+          } else {
+            this.display.setColor(i, j, Color.BLUE);
+          }
+          
         } else if (particleObj.getType() == WOOD) {          
           this.display.setColor(i, j, new Color(153, 102, 0));
         }
@@ -236,6 +244,16 @@ public class Solution {
   public boolean canWaterMoveRight (int row, int column) {
     if (column+1 < this.display.getNumColumns() &&
     this.grid[row][column+1].getType() == EMPTY) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public boolean isWaterNextToSand (int row, int column){
+    if( this.grid[row][column+1].getType() == SAND ||
+    this.grid[row][column-1].getType() == SAND ||
+    this.grid[row+1][column].getType() == SAND) {
       return true;
     }
 
