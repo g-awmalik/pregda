@@ -164,11 +164,14 @@ public class Solution {
         //System.out.print("FOUND WATER ON LEFT");
         this.grid[randomPtObj.row][randomPtObj.column-1].setType(EMPTY);
         this.grid[randomPtObj.row][randomPtObj.column+1].setType(WATER);
+      }
+      else if(this.grid[randomPtObj.row+1][randomPtObj.column+1].getType() == WATER){
+        this.grid[randomPtObj.row-1][randomPtObj.column].setType(EMPTY);
       } 
         //this.grid[randomPtObj.row][randomPtObj.column].setType(EMPTY);
     }
     
-  }
+  } 
 
   public void handleWoodParticles(Point randomPtObj) {
     if (canWoodMoveDown(randomPtObj.row, randomPtObj.column)) {
@@ -261,6 +264,7 @@ public class Solution {
     return false;
   }
 
+  // 
   /********************************************************************/
   /********************************************************************/
   /**
