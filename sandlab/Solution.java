@@ -17,9 +17,11 @@ public class Solution {
   public static final int LEFT = 2;
 
   // Do not add any more fields as part of Lab 5.
-  private int[][] grid;
+  //private int[][] grid;
+  private Particle[][] grid;
   private SandDisplayInterface display;
   private RandomGenerator random;
+  private Color[] sandTints;
 
   /**
    * Constructor.
@@ -30,9 +32,15 @@ public class Solution {
   public Solution(SandDisplayInterface display, RandomGenerator random) {
     this.display = display;
     this.random = random;
+    this.grid = new Particle[display.getNumRows()][display.getNumColumns()];
 
-    //this.grid = new int[display.getNumColumns()][display.getNumRows()];
-    this.grid = new int[display.getNumRows()][display.getNumColumns()];
+    for (int i = 0; i < this.grid.length; i++) {
+      for (int j = 0; j < this.grid[i].length; j++) {
+        this.grid[i][j] = new Particle(EMPTY);
+      }
+    }
+
+    generateSandTints();
   }
 
   /**
@@ -44,8 +52,9 @@ public class Solution {
    */
   private void locationClicked(int row, int col, int tool) {
     // TODO: Populate this method in step 3.
-    //this.grid[col][row] = tool;
-    this.grid[row][col] = tool;
+
+    Particle particleType = new Particle(tool);
+    this.grid[row][col] = particleType;
   }
 
   /** Copies each element of grid into the display. */
@@ -54,20 +63,44 @@ public class Solution {
 
     for (int i = 0; i < this.grid.length; i++) {
       for (int j = 0; j < this.grid[i].length; j++) {
-        int particleType = this.grid[i][j];
-        if (particleType == EMPTY) {
+        Particle particleObj = this.grid[i][j];
+
+        if (particleObj.getType() == EMPTY) {
           this.display.setColor(i, j, Color.BLACK);
-        } else if (particleType == METAL) {
+        } else if (particleObj.getType() == METAL) {
           this.display.setColor(i, j, Color.GRAY);
-        } else if (particleType == SAND) {
-          this.display.setColor(i, j, Color.YELLOW);
-        } else if (particleType == WATER) {
+        } else if (particleObj.getType() == SAND) {
+          Color sandTint = particleObj.getTint();
+          if (sandTint == null) {
+            sandTint = getRandomSandTint();
+            particleObj.setTint(sandTint);
+          }
+          //this.display.setColor(i, j, new Color(153, 102, 0));
+          this.display.setColor(i, j, sandTint);
+        } else if (particleObj.getType() == WATER) {
           this.display.setColor(i, j, Color.BLUE);
-        } else if (particleType == WOOD) {
+        } else if (particleObj.getType() == WOOD) {          
           this.display.setColor(i, j, new Color(153, 102, 0));
         }
       }
     }
+  }
+
+  private Color getRandomSandTint() {
+    Random rand = new Random();
+    int upperbound = 4;
+    int int_random = rand.nextInt(upperbound);
+
+    return sandTints[int_random];
+  }
+
+  private void generateSandTints() {
+    this.sandTints = new Color[5];
+    this.sandTints[0] = new Color(168, 102, 50);
+    this.sandTints[1] = new Color(168, 127, 50);
+    this.sandTints[2] = new Color(168, 156, 50);
+    this.sandTints[3] = new Color(115, 104, 13);
+    this.sandTints[4] = new Color(227, 191, 113);
   }
 
   /** Called repeatedly. Causes one random particle to maybe do something. */
@@ -76,54 +109,58 @@ public class Solution {
     Point randomPtObj = random.getRandomPoint();
     int direction = random.getRandomDirection();
 
-    if (this.grid[randomPtObj.row][randomPtObj.column] == SAND) {
+    if (this.grid[randomPtObj.row][randomPtObj.column].getType() == SAND) {
+      Color currentSandTint = this.grid[randomPtObj.row][randomPtObj.column].getTint();
       if (canSandMoveDown(randomPtObj.row, randomPtObj.column)) {
-        int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column];
-        this.grid[randomPtObj.row][randomPtObj.column] = particleBelow;
-        this.grid[randomPtObj.row+1][randomPtObj.column] = SAND;
+        int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column].getType();
+        this.grid[randomPtObj.row][randomPtObj.column].setType(particleBelow);
+        this.grid[randomPtObj.row+1][randomPtObj.column].setType(SAND);
+        this.grid[randomPtObj.row+1][randomPtObj.column].setTint(currentSandTint);
       } else {
         if (direction == LEFT &&
           canSandSagLeft(randomPtObj.row, randomPtObj.column)) {
-            int particleLeft = this.grid[randomPtObj.row][randomPtObj.column-1];
-            this.grid[randomPtObj.row][randomPtObj.column] = particleLeft;
-            this.grid[randomPtObj.row][randomPtObj.column-1] = SAND;
+            int particleLeft = this.grid[randomPtObj.row][randomPtObj.column-1].getType();
+            this.grid[randomPtObj.row][randomPtObj.column].setType(particleLeft);
+            this.grid[randomPtObj.row][randomPtObj.column-1].setType(SAND);
+            this.grid[randomPtObj.row][randomPtObj.column-1].setTint(currentSandTint);
         } else if (direction == RIGHT &&
           canSandSagRight(randomPtObj.row, randomPtObj.column)) {
-            int particleRight = this.grid[randomPtObj.row][randomPtObj.column+1];
-            this.grid[randomPtObj.row][randomPtObj.column] = particleRight;
-            this.grid[randomPtObj.row][randomPtObj.column+1] = SAND;
+            int particleRight = this.grid[randomPtObj.row][randomPtObj.column+1].getType();
+            this.grid[randomPtObj.row][randomPtObj.column].setType(particleRight);
+            this.grid[randomPtObj.row][randomPtObj.column+1].setType(SAND);
+            this.grid[randomPtObj.row][randomPtObj.column+1].setTint(currentSandTint);
         }
       }
-    } else if (this.grid[randomPtObj.row][randomPtObj.column] == WATER) {
+    } else if (this.grid[randomPtObj.row][randomPtObj.column].getType() == WATER) {
       if (direction == DOWN &&
         canWaterMoveDown(randomPtObj.row, randomPtObj.column)) {
-          int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column];
-          this.grid[randomPtObj.row][randomPtObj.column] = particleBelow;
-          this.grid[randomPtObj.row+1][randomPtObj.column] = WATER;
+          int particleBelow = this.grid[randomPtObj.row+1][randomPtObj.column].getType();
+          this.grid[randomPtObj.row][randomPtObj.column].setType(particleBelow);
+          this.grid[randomPtObj.row+1][randomPtObj.column].setType(WATER);
       } else if (direction == RIGHT &&
         canWaterMoveRight(randomPtObj.row, randomPtObj.column)) {
-          this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
-          this.grid[randomPtObj.row][randomPtObj.column+1] = WATER;
+          this.grid[randomPtObj.row][randomPtObj.column].setType(EMPTY);
+          this.grid[randomPtObj.row][randomPtObj.column+1].setType(WATER);
       } else if (direction == LEFT &&
         canWaterMoveLeft(randomPtObj.row, randomPtObj.column)) {
-          this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
-          this.grid[randomPtObj.row][randomPtObj.column-1] = WATER;
+          this.grid[randomPtObj.row][randomPtObj.column].setType(EMPTY);
+          this.grid[randomPtObj.row][randomPtObj.column-1].setType(WATER);
       }
-    } else if (this.grid[randomPtObj.row][randomPtObj.column] == WOOD) {
+    } else if (this.grid[randomPtObj.row][randomPtObj.column].getType() == WOOD) {
       handleWoodParticles(randomPtObj);
     }
   }
 
   public void handleWoodParticles(Point randomPtObj) {
     if (canWoodMoveDown(randomPtObj.row, randomPtObj.column)) {
-      this.grid[randomPtObj.row][randomPtObj.column] = EMPTY;
-      this.grid[randomPtObj.row+1][randomPtObj.column] = WOOD;
+      this.grid[randomPtObj.row][randomPtObj.column].setType(EMPTY);
+      this.grid[randomPtObj.row+1][randomPtObj.column].setType(WOOD);
     }
   }
 
   public boolean canWoodMoveDown (int row, int column) {
     if (row+1 < this.display.getNumRows() &&
-    this.grid[row+1][column] == EMPTY) {
+    this.grid[row+1][column].getType() == EMPTY) {
       return true;
     } else {
 
@@ -139,8 +176,10 @@ public class Solution {
       return false;
     }
 
-    if (this.grid[row+2][column-1] == EMPTY ||
-    this.grid[row+2][column-1] == WATER) {
+    if ((this.grid[row+1][column-1].getType() == EMPTY ||
+    this.grid[row+1][column-1].getType() == WATER) &&
+    (this.grid[row+2][column-1].getType() == EMPTY ||
+    this.grid[row+2][column-1].getType() == WATER)) {
       return true;
     }
 
@@ -153,8 +192,10 @@ public class Solution {
       return false;
     }
 
-    if (this.grid[row+2][column+1] == EMPTY ||
-    this.grid[row+2][column+1] == WATER) {
+    if ((this.grid[row+1][column+1].getType() == EMPTY ||
+    this.grid[row+1][column+1].getType() == WATER) && 
+    (this.grid[row+2][column+1].getType() == EMPTY ||
+    this.grid[row+2][column+1].getType() == WATER)) {
       return true;
     }
 
@@ -164,8 +205,8 @@ public class Solution {
 
   public boolean canSandMoveDown (int row, int column) {
     if (row+1 < this.display.getNumRows() &&
-    (this.grid[row+1][column] == EMPTY ||
-    this.grid[row+1][column] == WATER)) {
+    (this.grid[row+1][column].getType() == EMPTY ||
+    this.grid[row+1][column].getType() == WATER)) {
       return true;
     }
 
@@ -174,8 +215,8 @@ public class Solution {
 
   public boolean canWaterMoveDown (int row, int column) {
     if (row+1 < this.display.getNumRows() &&
-    (this.grid[row+1][column] == EMPTY ||
-    this.grid[row+1][column] == WOOD)) {
+    (this.grid[row+1][column].getType() == EMPTY ||
+    this.grid[row+1][column].getType() == WOOD)) {
       return true;
     }
 
@@ -184,7 +225,7 @@ public class Solution {
 
   public boolean canWaterMoveLeft (int row, int column) {
     if (column-1 >= 0 &&
-    this.grid[row][column-1] == EMPTY) {
+    this.grid[row][column-1].getType() == EMPTY) {
       return true;
     }
 
@@ -193,7 +234,7 @@ public class Solution {
 
   public boolean canWaterMoveRight (int row, int column) {
     if (column+1 < this.display.getNumColumns() &&
-    this.grid[row][column+1] == EMPTY) {
+    this.grid[row][column+1].getType() == EMPTY) {
       return true;
     }
 
@@ -226,6 +267,28 @@ public class Solution {
 
     public int getColumn() {
       return column;
+    }
+  }
+
+  private static class Particle {
+    private int type;
+    private Color tint;
+
+    public Particle(int type) {
+      this.type = type;
+    }
+
+    public int getType() {
+      return type;
+    }
+    public Color getTint() {
+      return tint;
+    }
+    public void setType(int type) {
+      this.type = type;
+    }
+    public void setTint(Color tint) {
+      this.tint = tint;
     }
   }
 
@@ -295,7 +358,7 @@ public class Solution {
   private void readGridValues(Scanner in) {
     for (int i = 0; i < grid.length; i++) {
       for (int j = 0; j < grid[i].length; j++) {
-        grid[i][j] = in.nextInt();
+        grid[i][j].setType(in.nextInt());
       }
     }
   }
