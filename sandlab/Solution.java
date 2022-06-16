@@ -170,6 +170,7 @@ public class Solution {
 
   // sand will sag only if there are atleast two pixel empty or watery
   // to the left or right of it
+  // some comments to demostrate branching commits
   public boolean canSandSagLeft (int row, int column) {
     if (column == 0 ||
     row >= this.display.getNumRows() - 2) {
