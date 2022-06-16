@@ -251,13 +251,18 @@ public class Solution {
   }
 
   public boolean isWaterNextToSand (int row, int column){
-    if( this.grid[row][column+1].getType() == SAND ||
-    this.grid[row][column-1].getType() == SAND ||
+    //sand to the right or left
+    if( column+1 < this.display.getNumColumns() && 
+          (this.grid[row][column+1].getType() == SAND ||
+          this.grid[row][column-1].getType() == SAND))  {
+      return true;
+
+    }else if (row+1 < this.display.getNumRows() && 
     this.grid[row+1][column].getType() == SAND) {
       return true;
     }
 
-    return false;
+  return false;
   }
 
   /********************************************************************/
