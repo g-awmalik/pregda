@@ -82,7 +82,7 @@ public class Solution {
         } else if (particleObj.getType() == WATER) {
           //add if water is next to sand, any of left, right, below
           if (isWaterNextToSand(i, j)){
-            this.display.setColor(i,j, new Color(0, 0, 204));
+            this.display.setColor(i,j, new Color(0, 0, 153));
           } else {
             this.display.setColor(i, j, Color.BLUE);
           }
@@ -251,14 +251,18 @@ public class Solution {
   }
 
   public boolean isWaterNextToSand (int row, int column){
-    //sand to the right or left
+    //sand to the right 
     if( column+1 < this.display.getNumColumns() && 
-          (this.grid[row][column+1].getType() == SAND ||
-          this.grid[row][column-1].getType() == SAND))  {
+          (this.grid[row][column+1].getType() == SAND)  {
       return true;
 
+    //sand below
     }else if (row+1 < this.display.getNumRows() && 
     this.grid[row+1][column].getType() == SAND) {
+      return true;
+   //sand to the left 
+    } else if (column -1 >= 0 && 
+    this.grid[row][column-1].getType() == SAND) {
       return true;
     }
 
