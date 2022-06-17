@@ -146,19 +146,13 @@ public class Solution {
         canWaterMoveLeft(randomPtObj.row, randomPtObj.column)) {
           this.grid[randomPtObj.row][randomPtObj.column].setType(EMPTY);
           this.grid[randomPtObj.row][randomPtObj.column-1].setType(WATER);
-      } //else if (this.grid[randomPtObj.row - 1][randomPtObj.column].getType() == METAL){
-        /////this.grid[randomPtObj.row][randomPtObj.column].setType(EMPTY);
-      //} //Add this as a
+      } 
 
     } else if (this.grid[randomPtObj.row][randomPtObj.column].getType() == WOOD) {
       handleWoodParticles(randomPtObj);
     } else if (this.grid[randomPtObj.row][randomPtObj.column].getType() == METAL){
-     
-      /*if (this.grid[randomPtObj.row+1][randomPtObj.column].getType() == EMPTY ||  
-         this.grid[randomPtObj.row+1][randomPtObj.column].getType() == METAL ){
-          //System.out.print("  derp  ");
-        }*/
-      
+    
+      try{
       if(this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && 
               this.grid[randomPtObj.row][randomPtObj.column-1].getType() == EMPTY && 
               this.grid[randomPtObj.row+1][randomPtObj.column].getType() == EMPTY ||
@@ -166,8 +160,7 @@ public class Solution {
         System.out.print("");
         if (this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && 
                  this.grid[randomPtObj.row][randomPtObj.column-1].getType() == WATER ){
-          //this.grid[randomPtObj.row][randomPtObj.column+1].setType(EMPTY);
-          //this.grid[randomPtObj.row][randomPtObj.column-1].setType(WATER);
+
           System.out.print("");
         } else if (this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && 
                   this.grid[randomPtObj.row][randomPtObj.column-1].getType() == EMPTY &&
@@ -179,15 +172,13 @@ public class Solution {
                   this.grid[randomPtObj.row+1][randomPtObj.column+3].getType() == WATER){
             this.grid[randomPtObj.row][randomPtObj.column-1].setType(EMPTY);
             this.grid[randomPtObj.row][randomPtObj.column+1].setType(WATER);  
-      } 
+        } 
+      }
     }
-      // Check left and adjust the water level
-      /*else if(this.grid[randomPtObj.row][randomPtObj.column-1].getType() == WATER && 
-               this.grid[randomPtObj.row][randomPtObj.column+1].getType() == EMPTY){
-        //System.out.print("FOUND WATER ON LEFT");
-        this.grid[randomPtObj.row][randomPtObj.column-1].setType(EMPTY);
-        this.grid[randomPtObj.row][randomPtObj.column+1].setType(WATER);
-      }*/
+    catch(IndexOutOfBoundsException e)
+                {
+                    System.out.printf("");
+                }
     }
 
     
@@ -285,7 +276,6 @@ public class Solution {
     return false;
   }
 
-  // 
   /********************************************************************/
   /********************************************************************/
   /**
