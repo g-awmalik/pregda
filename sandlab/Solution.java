@@ -1,8 +1,6 @@
 import java.awt.*;
 import java.util.*;
 
-import javax.swing.plaf.ColorUIResource;
-
 public class Solution {
 
   // Add constants for particle types here.
@@ -11,9 +9,8 @@ public class Solution {
   public static final int SAND = 2;
   public static final int WATER = 3;
   public static final int WOOD = 4;
-  public static final int BALLOON = 5;
 
-  public static final String[] NAMES = {"Empty", "Metal", "Sand", "Water", "Wood", "Balloon"};
+  public static final String[] NAMES = {"Empty", "Metal", "Sand", "Water", "Wood"};
 
   public static final int DOWN = 0;
   public static final int RIGHT = 1;
@@ -57,43 +54,12 @@ public class Solution {
     // TODO: Populate this method in step 3.
 
     Particle particleType = new Particle(tool);
-
-    //if metal don't allow reassignment 
-    if( this.grid[row][col].getType() != METAL) {
-      if (tool == BALLOON && allowBalloon(row, col)){
-        //add the balloon to all four spaces 
-        this.grid[row][col] = particleType;
-        this.grid[row][col+1] = particleType;
-        this.grid[row][col-1] = particleType;
-        this.grid[row+1][col] = particleType;
-        this.grid[row-1][col] = particleType;
-      }
-      this.grid[row][col] = particleType;
-    }
-    //if equal to metal do nothing
+    this.grid[row][col] = particleType;
   }
-
-  //Checks 4 spaces around row, col are empty before placing a balloon
-  private boolean allowBalloon(int row, int col){
-    //sand to the right 
-    if( col+1 < this.display.getNumColumns() && col-1 >= 0 
-    && row +1 <this.display.getNumRows() && row -1 >= 0) {
-      if(this.grid[row][col+1].getType() == EMPTY &&
-      this.grid[row][col-1].getType() == EMPTY && 
-      this.grid[row+1][col].getType() == EMPTY &&
-      this.grid[row-1][col].getType() == EMPTY) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-  
 
   /** Copies each element of grid into the display. */
   public void updateDisplay() {
-    // TODO: Populate this method in step 4 and beyond.  
+    // TODO: Populate this method in step 4 and beyond.
 
     for (int i = 0; i < this.grid.length; i++) {
       for (int j = 0; j < this.grid[i].length; j++) {
@@ -112,17 +78,9 @@ public class Solution {
           //this.display.setColor(i, j, new Color(153, 102, 0));
           this.display.setColor(i, j, sandTint);
         } else if (particleObj.getType() == WATER) {
-          //add if water is next to sand, any of left, right, below
-          if (isWaterNextToSand(i, j)){
-            this.display.setColor(i,j, new Color(0, 0, 153));
-          } else {
-            this.display.setColor(i, j, Color.BLUE);
-          }
-          
+          this.display.setColor(i, j, Color.BLUE);
         } else if (particleObj.getType() == WOOD) {          
           this.display.setColor(i, j, new Color(153, 102, 0));
-        } else if (particleObj.getType() == BALLOON){
-          this.display.setColor(i, j, Color.RED);
         }
       }
     }
@@ -195,19 +153,44 @@ public class Solution {
     } else if (this.grid[randomPtObj.row][randomPtObj.column].getType() == WOOD) {
       handleWoodParticles(randomPtObj);
     } else if (this.grid[randomPtObj.row][randomPtObj.column].getType() == METAL){
-      // Check Right and adjust the water level
-      if(this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && this.grid[randomPtObj.row][randomPtObj.column-1].getType() == EMPTY){
-        //System.out.print("FOUND WATER ON RIGHT");
-        this.grid[randomPtObj.row][randomPtObj.column+1].setType(EMPTY);
-        this.grid[randomPtObj.row][randomPtObj.column-1].setType(WATER);
+     
+      /*if (this.grid[randomPtObj.row+1][randomPtObj.column].getType() == EMPTY ||  
+         this.grid[randomPtObj.row+1][randomPtObj.column].getType() == METAL ){
+          //System.out.print("  derp  ");
+        }*/
+      
+      if(this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && 
+              this.grid[randomPtObj.row][randomPtObj.column-1].getType() == EMPTY && 
+              this.grid[randomPtObj.row+1][randomPtObj.column].getType() == EMPTY ||
+              this.grid[randomPtObj.row+1][randomPtObj.column].getType() == METAL){
+        System.out.print("");
+        if (this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && 
+                 this.grid[randomPtObj.row][randomPtObj.column-1].getType() == WATER ){
+          //this.grid[randomPtObj.row][randomPtObj.column+1].setType(EMPTY);
+          //this.grid[randomPtObj.row][randomPtObj.column-1].setType(WATER);
+          System.out.print("");
+        } else if (this.grid[randomPtObj.row][randomPtObj.column+1].getType() == WATER && 
+                  this.grid[randomPtObj.row][randomPtObj.column-1].getType() == EMPTY &&
+                  this.grid[randomPtObj.row+1][randomPtObj.column-3].getType() == WATER){
+            this.grid[randomPtObj.row][randomPtObj.column+1].setType(EMPTY);
+            this.grid[randomPtObj.row][randomPtObj.column-1].setType(WATER);   
+        } else if (this.grid[randomPtObj.row][randomPtObj.column-1].getType() == WATER && 
+                  this.grid[randomPtObj.row][randomPtObj.column+1].getType() == EMPTY &&
+                  this.grid[randomPtObj.row+1][randomPtObj.column+3].getType() == WATER){
+            this.grid[randomPtObj.row][randomPtObj.column-1].setType(EMPTY);
+            this.grid[randomPtObj.row][randomPtObj.column+1].setType(WATER);  
       } 
+    }
       // Check left and adjust the water level
-      else if(this.grid[randomPtObj.row][randomPtObj.column-1].getType() == WATER && this.grid[randomPtObj.row][randomPtObj.column+1].getType() == EMPTY){
+      /*else if(this.grid[randomPtObj.row][randomPtObj.column-1].getType() == WATER && 
+               this.grid[randomPtObj.row][randomPtObj.column+1].getType() == EMPTY){
         //System.out.print("FOUND WATER ON LEFT");
         this.grid[randomPtObj.row][randomPtObj.column-1].setType(EMPTY);
         this.grid[randomPtObj.row][randomPtObj.column+1].setType(WATER);
-      }
+      }*/
     }
+
+    
     
   } 
 
@@ -302,25 +285,7 @@ public class Solution {
     return false;
   }
 
-  public boolean isWaterNextToSand (int row, int column){
-    //sand to the right 
-    if( column+1 < this.display.getNumColumns() && 
-          this.grid[row][column+1].getType() == SAND)  {
-      return true;
-
-    //sand below
-    }else if (row+1 < this.display.getNumRows() && 
-    this.grid[row+1][column].getType() == SAND) {
-      return true;
-   //sand to the left 
-    } else if (column -1 >= 0 && 
-    this.grid[row][column-1].getType() == SAND) {
-      return true;
-    }
-
-  return false;
-  }
-
+  // 
   /********************************************************************/
   /********************************************************************/
   /**
